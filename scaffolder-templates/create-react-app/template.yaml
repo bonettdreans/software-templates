@@ -75,7 +75,7 @@ spec:
       name: Send Email Notification
       action: notification:send
       input:
-        recipients: 'broadcast'
+        recipients: entity
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
         info: 'Your template has been executed'
         severity: 'low'
