@@ -57,7 +57,6 @@ spec:
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
-
     - id: publish
       name: Publish
       action: publish:github
@@ -66,23 +65,19 @@ spec:
           - github.com
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
-
     - id: register
       name: Register
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
-
     - id: notify
       name: Send Email Notification
       action: notification:send
       input:
-        recipients: 
-          - 'user:${{ parameters.owner }}'  # Envia para o owner (criador)
-        type: 'email'
-        title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        message: |
+        recipients: 'user:${{ parameters.owner }}'
+        subject: 'Template ${{ parameters.component_id }} criado com sucesso'
+        body: |
           Olá!
           
           O template ${{ parameters.component_id }} foi executado com sucesso.
@@ -94,8 +89,6 @@ spec:
           - Repository: ${{ steps.publish.output.remoteUrl }}
           
           Acesse o catálogo: ${{ steps.register.output.entityRef }}
-        severity: 'normal'
-
   output:
     links:
       - title: Repository
