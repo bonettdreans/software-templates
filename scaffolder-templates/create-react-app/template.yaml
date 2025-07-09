@@ -78,7 +78,7 @@ spec:
         recipients: 'broadcast'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
         info: 'Your template has been executed'
-        severity: 'info'
+        severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
   output:
     links:
