@@ -74,6 +74,17 @@ spec:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
 
+    - id: notify
+      name: Notify
+      action: notification:send
+      input:
+        recipients: entity
+        entityRefs:
+          - component:default/backstage
+        title: 'Template executed'
+        info: 'Your template has been executed'
+        severity: 'info'
+
   output:
     links:
       - title: Repository
