@@ -71,21 +71,22 @@ spec:
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
-    - id: notify
-      name: Send Notification
+    - id: notify-broadcast
+      name: Send Broadcast Notification
       action: notification:send
       input:
         recipients: 'broadcast'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        info: 'Your template has been executed successfully. Repository: ${{ steps.publish.output.remoteUrl }}'
+        info: 'Template executado com sucesso! Repositório: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
-    - id: notify
-      name: Send Notification
+    - id: notify-entity
+      name: Send Entity Notification
       action: notification:send
       input:
         recipients: 'entity'
-        entityRef: 'user:${{ parameters.owner }}'
+        entityRefs:
+          - 'user:${{ parameters.owner }}'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
         info: 'Seu template foi executado com sucesso! Repositório: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
