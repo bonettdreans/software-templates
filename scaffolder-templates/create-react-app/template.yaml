@@ -72,36 +72,24 @@ spec:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
     - id: notify
-      name: Send Email Notification
+      name: Send Notification
       action: notification:send
       input:
-        recipients: 
-          - 'broadcast'
-          - ${{ parameters.owner }}
+        recipients: 'broadcast'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
         info: 'Your template has been executed successfully. Repository: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
-        email:
-          to: 
-            - ${{ parameters.owner }}
-            - 'web@example.com'
-          subject: 'Template ${{ parameters.component_id }} criado com sucesso'
-          body: |
-            Olá,
-            
-            O template ${{ parameters.component_id }} foi criado com sucesso!
-            
-            Detalhes:
-            - Nome: ${{ parameters.component_id }}
-            - Descrição: ${{ parameters.description }}
-            - Owner: ${{ parameters.owner }}
-            - Repositório: ${{ steps.publish.output.remoteUrl }}
-            
-            Acesse o catálogo: ${{ steps.register.output.entityRef }}
-            
-            Atenciosamente,
-            Equipe Backstage
+    - id: notify-email
+      name: Send Email Notification
+      action: notification:send
+      input:
+        recipients: 'entity'
+        entityRef: ${{ parameters.owner }}
+        title: 'Template ${{ parameters.component_id }} criado com sucesso'
+        info: 'Olá! O template ${{ parameters.component_id }} foi criado com sucesso. Acesse: ${{ steps.publish.output.remoteUrl }}'
+        severity: 'low'
+        link: ${{ steps.publish.output.remoteUrl }}
   output:
     links:
       - title: Repository
