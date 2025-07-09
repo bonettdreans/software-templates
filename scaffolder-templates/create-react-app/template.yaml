@@ -77,18 +77,9 @@ spec:
       input:
         recipients: 'broadcast'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        description: |
-          Olá!
-          
-          O template ${{ parameters.component_id }} foi executado com sucesso.
-          
-          Detalhes:
-          - Component: ${{ parameters.component_id }}
-          - Descrição: ${{ parameters.description }}
-          - Owner: ${{ parameters.owner }}
-          - Repository: ${{ steps.publish.output.remoteUrl }}
-          
-          Acesse o catálogo: ${{ steps.register.output.entityRef }}
+        info: 'Your template has been executed'
+        severity: 'info'
+        link: ${{ steps.publish.output.remoteUrl }}
   output:
     links:
       - title: Repository
