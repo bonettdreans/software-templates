@@ -75,9 +75,9 @@ spec:
       name: Send Email Notification
       action: notification:send
       input:
-        recipients: 'user:${{ parameters.owner }}'
-        subject: 'Template ${{ parameters.component_id }} criado com sucesso'
-        body: |
+        recipients: 'broadcast'
+        title: 'Template ${{ parameters.component_id }} criado com sucesso'
+        description: |
           Olá!
           
           O template ${{ parameters.component_id }} foi executado com sucesso.
