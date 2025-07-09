@@ -80,14 +80,14 @@ spec:
         info: 'Your template has been executed successfully. Repository: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
-    - id: notify-email
-      name: Send Email Notification
+    - id: notify
+      name: Send Notification
       action: notification:send
       input:
         recipients: 'entity'
-        entityRef: ${{ parameters.owner }}
+        entityRef: 'user:${{ parameters.owner }}'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        info: 'Olá! O template ${{ parameters.component_id }} foi criado com sucesso. Acesse: ${{ steps.publish.output.remoteUrl }}'
+        info: 'Seu template foi executado com sucesso! Repositório: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
   output:
