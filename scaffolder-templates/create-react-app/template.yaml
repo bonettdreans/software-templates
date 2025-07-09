@@ -75,11 +75,33 @@ spec:
       name: Send Email Notification
       action: notification:send
       input:
-        recipients: 'broadcast'
+        recipients: 
+          - 'broadcast'
+          - ${{ parameters.owner }}
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        info: 'Your template has been executed'
+        info: 'Your template has been executed successfully. Repository: ${{ steps.publish.output.remoteUrl }}'
         severity: 'low'
         link: ${{ steps.publish.output.remoteUrl }}
+        email:
+          to: 
+            - ${{ parameters.owner }}
+            - 'web@example.com'
+          subject: 'Template ${{ parameters.component_id }} criado com sucesso'
+          body: |
+            Olá,
+            
+            O template ${{ parameters.component_id }} foi criado com sucesso!
+            
+            Detalhes:
+            - Nome: ${{ parameters.component_id }}
+            - Descrição: ${{ parameters.description }}
+            - Owner: ${{ parameters.owner }}
+            - Repositório: ${{ steps.publish.output.remoteUrl }}
+            
+            Acesse o catálogo: ${{ steps.register.output.entityRef }}
+            
+            Atenciosamente,
+            Equipe Backstage
   output:
     links:
       - title: Repository
