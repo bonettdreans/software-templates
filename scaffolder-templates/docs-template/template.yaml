@@ -9,14 +9,15 @@ metadata:
     - techdocs
     - mkdocs
 spec:
-  owner: backstage/techdocs-core
+  owner: user:default/bonettdreans
   type: documentation
-
+  
   parameters:
     - title: Fill in some steps
       required:
         - name
         - description
+        - owner
       properties:
         name:
           title: Name
@@ -36,6 +37,8 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+              - User
+    
     - title: Choose a location
       required:
         - repoUrl
@@ -47,10 +50,9 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
-
-  # This template is meant to be used on top of an existing template.
-  # By adding the following and fetching from an absolute URL you can
-  # add in the docs template
+            allowedOwners:
+              - bonettdreans
+  
   steps:
     - id: fetch
       name: Template Docs Skeleton
@@ -62,26 +64,31 @@ spec:
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
-
+    
     - id: publish
       name: Publish
       action: publish:github
       input:
-        allowedHosts: ["github.com"]
+        allowAutoMerge: true
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
-
+        defaultBranch: main
+        # ❌ REMOVIDO: allowedHosts (causava o erro!)
+    
     - id: register
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
-
+  
   output:
     links:
       - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
+        url: ${{ steps['publish'].output.remoteUrl }}
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+        entityRef: ${{ steps['register'].output.entityRef }}
+      - title: View TechDocs
+        icon: docs
+        entityRef: ${{ steps['register'].output.entityRef }}
