@@ -8,8 +8,9 @@ metadata:
     - react
     - cra
 spec:
-  owner: web@example.com
+  owner: user:default/bonettdreans
   type: website
+  
   parameters:
     - title: Provide some simple information
       required:
@@ -32,7 +33,9 @@ spec:
           ui:field: OwnerPicker
           ui:options:
             allowedKinds:
+              - Group
               - User
+    
     - title: Choose a location
       required:
         - repoUrl
@@ -44,6 +47,9 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
+            allowedOwners:
+              - bonettdreans
+  
   steps:
     - id: template
       name: Fetch Skeleton + Template
@@ -57,44 +63,50 @@ spec:
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
+    
     - id: publish
       name: Publish
       action: publish:github
       input:
-        allowedHosts:
-          - github.com
+        allowAutoMerge: true
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        # ❌ REMOVIDO: allowedHosts (não deve estar aqui!)
+    
     - id: register
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
+    
     - id: notify-broadcast
       name: Send Broadcast Notification
       action: notification:send
       input:
         recipients: 'broadcast'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        info: 'Template executado com sucesso! Repositório: ${{ steps.publish.output.remoteUrl }}'
+        info: 'Template executado com sucesso! Repositório: ${{ steps["publish"].output.remoteUrl }}'
         severity: 'low'
-        link: ${{ steps.publish.output.remoteUrl }}
+        link: ${{ steps['publish'].output.remoteUrl }}
+    
     - id: notify-entity
       name: Send Entity Notification
       action: notification:send
       input:
         recipients: 'entity'
         entityRefs:
-          - 'user:${{ parameters.owner }}'
+          - '${{ parameters.owner }}'
         title: 'Template ${{ parameters.component_id }} criado com sucesso'
-        info: 'Seu template foi executado com sucesso! Repositório: ${{ steps.publish.output.remoteUrl }}'
+        info: 'Seu template foi executado com sucesso! Repositório: ${{ steps["publish"].output.remoteUrl }}'
         severity: 'low'
-        link: ${{ steps.publish.output.remoteUrl }}
+        link: ${{ steps['publish'].output.remoteUrl }}
+  
   output:
     links:
       - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
+        url: ${{ steps['publish'].output.remoteUrl }}
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+        entityRef: ${{ steps['register'].output.entityRef }}
